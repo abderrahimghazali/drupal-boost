@@ -1,0 +1,53 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/detect-drupal-env.sh",
+            "timeout": 10,
+            "statusMessage": "Detecting Drupal environment..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-drupal-code.sh",
+            "timeout": 5,
+            "statusMessage": "Validating Drupal code structure..."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/detect-hosting-platform.sh",
+            "timeout": 5,
+            "statusMessage": "Checking environment for command adaptation..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-coding-standards.sh",
+            "timeout": 10,
+            "statusMessage": "Checking Drupal coding standards..."
+          }
+        ]
+      }
+    ]
+  }
+}

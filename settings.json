@@ -1,0 +1,22 @@
+{
+  "agents": {
+    "drupal-explorer": {
+      "enabled": true
+    },
+    "drupal-architect": {
+      "enabled": true
+    },
+    "drupal-reviewer": {
+      "enabled": true
+    },
+    "drupal-security-auditor": {
+      "enabled": true
+    },
+    "drupal-migration-analyst": {
+      "enabled": true
+    },
+    "drupal-test-runner": {
+      "enabled": true
+    }
+  }
+}
