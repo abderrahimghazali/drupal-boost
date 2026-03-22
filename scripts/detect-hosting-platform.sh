@@ -6,7 +6,7 @@ set -euo pipefail
 
 INPUT=$(cat)
 CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null || echo "")
-TOOL_INPUT=$(echo "$INPUT" | jq -r '.hookSpecificOutput.toolInput // empty' 2>/dev/null || echo "")
+TOOL_INPUT=$(echo "$INPUT" | jq -r '.tool_input // empty' 2>/dev/null || echo "")
 COMMAND=$(echo "$TOOL_INPUT" | jq -r '.command // empty' 2>/dev/null || echo "")
 
 if [ -z "$COMMAND" ] || [ -z "$CWD" ]; then
@@ -29,7 +29,7 @@ fi
 SUGGESTION=""
 
 # Check if command uses drush directly without the environment prefix
-if echo "$COMMAND" | grep -qP '(?<!\w)drush\s' && ! echo "$COMMAND" | grep -q "ddev drush" && ! echo "$COMMAND" | grep -q "lando drush"; then
+if echo "$COMMAND" | grep -qE '(^|[[:space:]])drush[[:space:]]' && ! echo "$COMMAND" | grep -q "ddev drush" && ! echo "$COMMAND" | grep -q "lando drush"; then
   if [ "$ENV_TYPE" = "ddev" ]; then
     SUGGESTION="This project uses DDEV. Consider using 'ddev drush' instead of 'drush' to run commands inside the container."
   elif [ "$ENV_TYPE" = "lando" ]; then
@@ -38,7 +38,7 @@ if echo "$COMMAND" | grep -qP '(?<!\w)drush\s' && ! echo "$COMMAND" | grep -q "d
 fi
 
 # Check if command uses composer directly
-if echo "$COMMAND" | grep -qP '(?<!\w)composer\s' && ! echo "$COMMAND" | grep -q "ddev composer" && ! echo "$COMMAND" | grep -q "lando composer"; then
+if echo "$COMMAND" | grep -qE '(^|[[:space:]])composer[[:space:]]' && ! echo "$COMMAND" | grep -q "ddev composer" && ! echo "$COMMAND" | grep -q "lando composer"; then
   if [ "$ENV_TYPE" = "ddev" ]; then
     SUGGESTION="${SUGGESTION:+$SUGGESTION }This project uses DDEV. Consider using 'ddev composer' for Composer commands."
   elif [ "$ENV_TYPE" = "lando" ]; then
@@ -47,7 +47,7 @@ if echo "$COMMAND" | grep -qP '(?<!\w)composer\s' && ! echo "$COMMAND" | grep -q
 fi
 
 # Check if command uses php directly
-if echo "$COMMAND" | grep -qP '(?<!\w)php\s' && ! echo "$COMMAND" | grep -q "ddev exec php" && ! echo "$COMMAND" | grep -q "ddev php" && ! echo "$COMMAND" | grep -q "lando php"; then
+if echo "$COMMAND" | grep -qE '(^|[[:space:]])php[[:space:]]' && ! echo "$COMMAND" | grep -q "ddev exec php" && ! echo "$COMMAND" | grep -q "ddev php" && ! echo "$COMMAND" | grep -q "lando php"; then
   if [ "$ENV_TYPE" = "ddev" ]; then
     SUGGESTION="${SUGGESTION:+$SUGGESTION }This project uses DDEV. Consider using 'ddev php' or 'ddev exec php' for PHP commands."
   elif [ "$ENV_TYPE" = "lando" ]; then
@@ -56,11 +56,7 @@ if echo "$COMMAND" | grep -qP '(?<!\w)php\s' && ! echo "$COMMAND" | grep -q "dde
 fi
 
 if [ -n "$SUGGESTION" ]; then
-  cat <<EOF
-{
-  "additionalContext": "${SUGGESTION}"
-}
-EOF
+  jq -n --arg ctx "$SUGGESTION" '{ additionalContext: $ctx }'
 fi
 
 exit 0

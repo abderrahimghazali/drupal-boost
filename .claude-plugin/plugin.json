@@ -1,28 +1,7 @@
 {
   "name": "drupal-boost",
-  "version": "1.0.0",
   "description": "Comprehensive Drupal 11 development toolkit: module scaffolding, theme development, configuration management, migration, security auditing, testing, deployment, and more. Supports DDEV and Lando.",
   "author": {
-    "name": "Abderrahim Ghazali",
-    "url": "https://github.com/abderrahimghazali"
-  },
-  "homepage": "https://github.com/abderrahimghazali/drupal-boost",
-  "repository": "https://github.com/abderrahimghazali/drupal-boost",
-  "license": "MIT",
-  "keywords": [
-    "drupal",
-    "drupal-11",
-    "ddev",
-    "lando",
-    "php",
-    "cms",
-    "module-development",
-    "theme-development",
-    "migration",
-    "security",
-    "testing",
-    "deployment",
-    "recipes",
-    "jsonapi"
-  ]
+    "name": "Abderrahim Ghazali"
+  }
 }

@@ -20,7 +20,7 @@ PHP_VERSION=""
 for candidate in "$CWD/web/core/lib/Drupal.php" "$CWD/core/lib/Drupal.php" "$CWD/docroot/core/lib/Drupal.php"; do
   if [ -f "$candidate" ]; then
     DRUPAL_ROOT=$(dirname "$(dirname "$(dirname "$candidate")")")
-    DRUPAL_VERSION=$(grep -oP "const VERSION = '\K[^']+" "$candidate" 2>/dev/null || echo "unknown")
+    DRUPAL_VERSION=$(sed -n "s/.*const VERSION = '\([^']*\)'.*/\1/p" "$candidate" 2>/dev/null || echo "unknown")
     break
   fi
 done
@@ -34,7 +34,11 @@ fi
 # Detect DDEV
 if [ -f "$CWD/.ddev/config.yaml" ]; then
   ENV_TYPE="ddev"
-  PHP_VERSION=$(grep -oP 'php_version:\s*"\K[^"]+' "$CWD/.ddev/config.yaml" 2>/dev/null || echo "")
+  PHP_VERSION=$(sed -n 's/.*php_version:[[:space:]]*"\([^"]*\)".*/\1/p' "$CWD/.ddev/config.yaml" 2>/dev/null || echo "")
+  # Also try unquoted value
+  if [ -z "$PHP_VERSION" ]; then
+    PHP_VERSION=$(sed -n 's/.*php_version:[[:space:]]*\([0-9.]*\).*/\1/p' "$CWD/.ddev/config.yaml" 2>/dev/null || echo "")
+  fi
 fi
 
 # Detect Lando
@@ -79,17 +83,24 @@ if [ "$COMPOSER_EXISTS" = "true" ]; then
   CONTEXT="${CONTEXT} Composer project detected."
 fi
 
-cat <<EOF
-{
-  "additionalContext": "${CONTEXT}",
-  "hookSpecificOutput": {
-    "hookEventName": "SessionStart",
-    "drupalVersion": "${DRUPAL_VERSION}",
-    "drupalRoot": "${DRUPAL_ROOT}",
-    "envType": "${ENV_TYPE}",
-    "phpVersion": "${PHP_VERSION}",
-    "composerExists": ${COMPOSER_EXISTS},
-    "drushExists": ${DRUSH_EXISTS}
-  }
-}
-EOF
+# Use jq to safely produce JSON output
+jq -n \
+  --arg context "$CONTEXT" \
+  --arg version "$DRUPAL_VERSION" \
+  --arg root "$DRUPAL_ROOT" \
+  --arg env "$ENV_TYPE" \
+  --arg php "$PHP_VERSION" \
+  --argjson composer "$COMPOSER_EXISTS" \
+  --argjson drush "$DRUSH_EXISTS" \
+  '{
+    additionalContext: $context,
+    hookSpecificOutput: {
+      hookEventName: "SessionStart",
+      drupalVersion: $version,
+      drupalRoot: $root,
+      envType: $env,
+      phpVersion: $php,
+      composerExists: $composer,
+      drushExists: $drush
+    }
+  }'

@@ -2,6 +2,32 @@
 
 The most comprehensive Drupal 11 development toolkit for Claude Code. Module scaffolding, theme development, configuration management, migration, security auditing, testing, deployment, and more.
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [How It Works](#how-it-works)
+- [Commands](#commands)
+- [Agents](#agents)
+- [Skills](#skills)
+- [Hooks](#hooks)
+- [Environment Support](#environment-support)
+- [Drupal Compatibility](#drupal-compatibility)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Requirements
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI v1.0+
+- `jq` installed (used by hook scripts for JSON processing)
+- For full functionality within a Drupal project:
+  - PHP 8.2+ (Drupal 11 requirement)
+  - Composer
+  - A Drupal 10.3+ or 11.x project
+  - Optionally: [DDEV](https://ddev.readthedocs.io/) or [Lando](https://lando.dev/) for local development
+
 ## Installation
 
 ```bash
@@ -21,6 +47,42 @@ claude --plugin-dir ./drupal-boost
 /drupal-boost:security-audit
 /drupal-boost:quality-check
 ```
+
+## How It Works
+
+drupal-boost operates on a 3-tier architecture that combines automatic detection, contextual skills, and user-invoked workflows:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Tier 1: AUTOMATIC                                      │
+│  SessionStart hook detects Drupal version, DDEV/Lando,  │
+│  PHP version, Composer, and Drush availability.         │
+├─────────────────────────────────────────────────────────┤
+│  Tier 2: SKILLS (Auto-Triggered)                        │
+│  13 skills activate based on conversation context.      │
+│  Ask about migrations → migrate-api skill loads.        │
+│  Ask about caching → caching-strategy skill loads.      │
+├─────────────────────────────────────────────────────────┤
+│  Tier 3: COMMANDS (User-Invoked)                        │
+│  8 slash commands for multi-phase workflows.            │
+│  /boost-feature runs a full 7-phase dev cycle.          │
+├─────────────────────────────────────────────────────────┤
+│  Cross-cutting: HOOKS                                   │
+│  Every Write/Edit is validated for PSR-4 namespaces,    │
+│  .info.yml structure, and Drupal coding standards.      │
+│  Bash commands are adapted for DDEV/Lando.              │
+└─────────────────────────────────────────────────────────┘
+```
+
+The flagship `/drupal-boost:boost-feature` command orchestrates a 7-phase workflow:
+
+1. **Discovery** — gather requirements from the user
+2. **Exploration** — parallel `drupal-explorer` agents analyze the codebase
+3. **Clarifying Questions** — fill knowledge gaps
+4. **Architecture** — parallel `drupal-architect` agents propose multiple approaches
+5. **Implementation** — build the chosen approach
+6. **Quality Review** — parallel `drupal-reviewer` + `drupal-security-auditor` agents
+7. **Summary** — files created, next steps, manual testing guidance
 
 ## Commands
 
@@ -88,23 +150,26 @@ Skills activate automatically when Claude detects relevant context:
 - Drupal 10.3+ (most features)
 - OOP Hook attributes require Drupal 11.1+
 
-## Workflow Architecture
+## Troubleshooting
 
-```
-Tier 1: AUTOMATIC — SessionStart hook detects environment
-Tier 2: SKILLS   — Auto-triggered by conversation context
-Tier 3: COMMANDS — User-invoked multi-phase workflows
-Cross-cutting: HOOKS — Validate code on every write/edit
-```
+**Plugin not activating skills?**
+Skills are triggered by conversation context. Mention the topic explicitly (e.g., "I need to set up a migration from Drupal 7") to activate the relevant skill.
 
-The flagship `/drupal-boost:boost-feature` command orchestrates a 7-phase workflow:
-1. Discovery (gather requirements)
-2. Exploration (parallel drupal-explorer agents)
-3. Clarifying Questions (fill gaps)
-4. Architecture (parallel drupal-architect agents with multiple approaches)
-5. Implementation (build chosen approach)
-6. Quality Review (parallel drupal-reviewer + drupal-security-auditor)
-7. Summary (files created, next steps)
+**Hook scripts failing?**
+Ensure `jq` is installed (`brew install jq` on macOS, `apt install jq` on Ubuntu). Hook scripts require `jq` for JSON parsing.
+
+**DDEV/Lando not detected?**
+The SessionStart hook looks for `.ddev/config.yaml` or `.lando.yml` in your working directory. Make sure you launch Claude Code from the project root.
+
+**Commands not found?**
+Verify the plugin is installed with `claude plugin list`. If loading directly, ensure the path points to the plugin root directory containing `.claude-plugin/plugin.json`.
+
+**Namespace validation blocking writes?**
+The PreToolUse hook validates PSR-4 namespaces for files under `modules/*/src/`. If your project uses a non-standard module path, the validation will be skipped.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this plugin.
 
 ## License
 

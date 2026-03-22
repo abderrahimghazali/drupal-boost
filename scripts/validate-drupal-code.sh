@@ -6,7 +6,7 @@ set -euo pipefail
 
 INPUT=$(cat)
 CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null || echo "")
-TOOL_INPUT=$(echo "$INPUT" | jq -r '.hookSpecificOutput.toolInput // empty' 2>/dev/null || echo "")
+TOOL_INPUT=$(echo "$INPUT" | jq -r '.tool_input // empty' 2>/dev/null || echo "")
 
 # Extract file path from tool input
 FILE_PATH=$(echo "$TOOL_INPUT" | jq -r '.file_path // .filePath // empty' 2>/dev/null || echo "")
@@ -53,15 +53,16 @@ if [[ "$FILE_PATH" == */src/*.php ]]; then
   if [ -n "$CONTENT" ]; then
     # Extract expected module name from path
     # Pattern: modules/custom/MODULE_NAME/src/ or modules/MODULE_NAME/src/
-    MODULE_NAME=$(echo "$FILE_PATH" | grep -oP '(?:modules/(?:custom/|contrib/)?)\K[^/]+(?=/src/)' 2>/dev/null || echo "")
+    MODULE_NAME=$(echo "$FILE_PATH" | sed -n 's|.*modules/\(custom/\|contrib/\)\{0,1\}\([^/]*\)/src/.*|\2|p')
     if [ -n "$MODULE_NAME" ]; then
-      # Convert module_name to Drupal\module_name namespace
-      EXPECTED_NS="Drupal\\\\${MODULE_NAME}"
-      if echo "$CONTENT" | grep -q "^namespace " ; then
-        ACTUAL_NS=$(echo "$CONTENT" | grep -oP '^namespace \K[^;]+' | head -1)
-        if [[ ! "$ACTUAL_NS" == Drupal\\${MODULE_NAME}* ]]; then
-          ERRORS="${ERRORS}PSR-4 namespace mismatch: expected '${EXPECTED_NS}\\...' but found '${ACTUAL_NS}'. "
-        fi
+      # Check if file has a namespace declaration
+      ACTUAL_NS=$(echo "$CONTENT" | sed -n 's/^namespace \([^;]*\);.*/\1/p' | head -1)
+      if [ -n "$ACTUAL_NS" ]; then
+        EXPECTED_PREFIX="Drupal\\${MODULE_NAME}"
+        case "$ACTUAL_NS" in
+          "${EXPECTED_PREFIX}"*) ;; # matches — ok
+          *) ERRORS="${ERRORS}PSR-4 namespace mismatch: expected 'Drupal\\${MODULE_NAME}\\...' but found '${ACTUAL_NS}'. " ;;
+        esac
       fi
     fi
   fi
