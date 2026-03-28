@@ -1,10 +1,15 @@
 ---
 name: drupal-explorer
-description: Deep Drupal codebase analysis agent. Traces service definitions, plugin discovery, routing, hook implementations, entity relationships, and module dependencies. Use when exploring how a Drupal feature works, understanding service wiring, or tracing execution paths through Drupal core or contrib modules.
+description: >
+  Deep Drupal codebase analysis agent. Traces service definitions, plugin discovery, routing, hook implementations, entity relationships, and module dependencies. Use when exploring how a Drupal feature works, understanding service wiring, or tracing execution paths through Drupal core or contrib modules.
+
+  <example>Analyze how the node module handles access control</example>
+  <example>Trace the dependency injection chain for the entity_type.manager service</example>
+  <example>Find all hook_form_alter implementations in custom modules</example>
 model: haiku
 tools: Read, Grep, Glob, Bash
 disallowedTools: Write, Edit, NotebookEdit
-color: "#0678be"
+color: blue
 maxTurns: 15
 ---
 

@@ -2,7 +2,6 @@
 name: contrib-publishing
 description: Publishing contributed modules to drupal.org including coding standards, documentation requirements, GitLab CI templates, and the module review process. Use when preparing a module for drupal.org submission.
 allowed-tools: Read, Write, Edit, Bash, Grep
-disable-model-invocation: true
 ---
 
 # Publishing to drupal.org

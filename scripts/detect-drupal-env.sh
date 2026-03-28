@@ -83,24 +83,28 @@ if [ "$COMPOSER_EXISTS" = "true" ]; then
   CONTEXT="${CONTEXT} Composer project detected."
 fi
 
-# Use jq to safely produce JSON output
-jq -n \
-  --arg context "$CONTEXT" \
-  --arg version "$DRUPAL_VERSION" \
-  --arg root "$DRUPAL_ROOT" \
-  --arg env "$ENV_TYPE" \
-  --arg php "$PHP_VERSION" \
-  --argjson composer "$COMPOSER_EXISTS" \
-  --argjson drush "$DRUSH_EXISTS" \
-  '{
-    additionalContext: $context,
-    hookSpecificOutput: {
-      hookEventName: "SessionStart",
-      drupalVersion: $version,
-      drupalRoot: $root,
-      envType: $env,
-      phpVersion: $php,
-      composerExists: $composer,
-      drushExists: $drush
-    }
-  }'
+# Use jq to safely produce JSON output (with fallback if jq is not installed)
+if command -v jq &>/dev/null; then
+  jq -n \
+    --arg context "$CONTEXT" \
+    --arg version "$DRUPAL_VERSION" \
+    --arg root "$DRUPAL_ROOT" \
+    --arg env "$ENV_TYPE" \
+    --arg php "$PHP_VERSION" \
+    --argjson composer "$COMPOSER_EXISTS" \
+    --argjson drush "$DRUSH_EXISTS" \
+    '{
+      additionalContext: $context,
+      hookSpecificOutput: {
+        hookEventName: "SessionStart",
+        drupalVersion: $version,
+        drupalRoot: $root,
+        envType: $env,
+        phpVersion: $php,
+        composerExists: $composer,
+        drushExists: $drush
+      }
+    }'
+else
+  printf '{"additionalContext": "%s (install jq for full drupal-boost functionality)"}\n' "$CONTEXT"
+fi

@@ -1,11 +1,16 @@
 ---
 name: drupal-reviewer
-description: Reviews Drupal code for coding standards compliance, Drupal API best practices, deprecated API usage, and Drupal-specific anti-patterns. Use after writing Drupal code to ensure it follows conventions and avoids common pitfalls.
+description: >
+  Reviews Drupal code for coding standards compliance, Drupal API best practices, deprecated API usage, and Drupal-specific anti-patterns. Use after writing Drupal code to ensure it follows conventions and avoids common pitfalls.
+
+  <example>Review the custom module I just created for coding standards issues</example>
+  <example>Check my entity access handler for security best practices</example>
+  <example>Audit this controller for deprecated Drupal API usage</example>
 model: sonnet
 tools: Read, Grep, Glob, Bash
 disallowedTools: Write, Edit, NotebookEdit
 skills: quality-testing, drupal-security
-color: "#e87511"
+color: yellow
 maxTurns: 15
 ---
 

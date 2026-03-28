@@ -1,11 +1,16 @@
 ---
 name: drupal-migration-analyst
-description: Analyzes source data and designs Drupal migration strategies. Maps source schemas to Drupal entities, identifies required process plugins, and creates migration YAML configurations. Use when planning a data migration into Drupal.
+description: >
+  Analyzes source data and designs Drupal migration strategies. Maps source schemas to Drupal entities, identifies required process plugins, and creates migration YAML configurations. Use when planning a data migration into Drupal.
+
+  <example>Plan a migration from a legacy MySQL database to Drupal content types</example>
+  <example>Analyze CSV files and map them to Drupal taxonomy terms and nodes</example>
+  <example>Design a Drupal 7 to Drupal 11 migration strategy</example>
 model: sonnet
 tools: Read, Grep, Glob, Bash
 disallowedTools: Write, Edit, NotebookEdit
 skills: migrate-api
-color: "#7b1fa2"
+color: magenta
 maxTurns: 20
 ---
 

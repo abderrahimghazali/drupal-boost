@@ -103,10 +103,10 @@ The flagship `/drupal-boost:boost-feature` command orchestrates a 7-phase workfl
 |-------|-------|-------|---------|
 | `drupal-explorer` | Blue | Haiku | Fast codebase analysis, traces services, hooks, routing, entities |
 | `drupal-architect` | Green | Sonnet | Designs module/feature architectures with implementation blueprints |
-| `drupal-reviewer` | Orange | Sonnet | Code review for Drupal standards, DI patterns, deprecated APIs |
+| `drupal-reviewer` | Yellow | Sonnet | Code review for Drupal standards, DI patterns, deprecated APIs |
 | `drupal-security-auditor` | Red | Sonnet | Deep security audit: XSS, SQL injection, access bypass, CSRF |
-| `drupal-migration-analyst` | Purple | Sonnet | Analyzes source data, maps to Drupal entities, generates migration YAML |
-| `drupal-test-runner` | Teal | Sonnet | Runs tests, analyzes failures, suggests and applies fixes |
+| `drupal-migration-analyst` | Magenta | Sonnet | Analyzes source data, maps to Drupal entities, generates migration YAML |
+| `drupal-test-runner` | Cyan | Sonnet | Runs tests, analyzes failures, suggests and applies fixes |
 
 ## Skills (Auto-Triggered)
 

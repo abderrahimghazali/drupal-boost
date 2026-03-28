@@ -1,11 +1,16 @@
 ---
 name: drupal-security-auditor
-description: Performs deep security audits of Drupal code checking for XSS vulnerabilities, SQL injection, access bypass, CSRF issues, insecure file handling, and permission misconfigurations. Use when reviewing security or before deploying to production.
+description: >
+  Performs deep security audits of Drupal code checking for XSS vulnerabilities, SQL injection, access bypass, CSRF issues, insecure file handling, and permission misconfigurations. Use when reviewing security or before deploying to production.
+
+  <example>Run a security audit on all custom modules before production deployment</example>
+  <example>Check this form handler for CSRF and XSS vulnerabilities</example>
+  <example>Audit file upload handling for directory traversal and extension validation</example>
 model: sonnet
 tools: Read, Grep, Glob, Bash
 disallowedTools: Write, Edit, NotebookEdit
 skills: drupal-security
-color: "#d32f2f"
+color: red
 maxTurns: 20
 ---
 

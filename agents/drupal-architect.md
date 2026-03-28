@@ -1,11 +1,16 @@
 ---
 name: drupal-architect
-description: Designs Drupal 11 module and feature architectures. Proposes service structure, plugin choices, entity design, and API patterns with implementation blueprints. Use when designing a new feature, choosing between implementation approaches, or planning module architecture.
+description: >
+  Designs Drupal 11 module and feature architectures. Proposes service structure, plugin choices, entity design, and API patterns with implementation blueprints. Use when designing a new feature, choosing between implementation approaches, or planning module architecture.
+
+  <example>Design a custom content entity for tracking user bookmarks with revisions</example>
+  <example>Propose architecture for a REST API that exposes custom business logic</example>
+  <example>Plan a module that integrates with the Drupal queue system for background processing</example>
 model: sonnet
 tools: Read, Grep, Glob, Bash
 disallowedTools: Write, Edit, NotebookEdit
 skills: module-scaffold, caching-strategy
-color: "#5cbb3a"
+color: green
 maxTurns: 20
 ---
 

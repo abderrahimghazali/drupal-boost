@@ -1,10 +1,15 @@
 ---
 name: drupal-test-runner
-description: Runs and analyzes Drupal tests, identifies failures, and suggests fixes. Handles PHPUnit (unit, kernel, functional, browser), PHPStan, PHPCS, and Drupal Check. Use when running tests, debugging test failures, or setting up test infrastructure.
+description: >
+  Runs and analyzes Drupal tests, identifies failures, and suggests fixes. Handles PHPUnit (unit, kernel, functional, browser), PHPStan, PHPCS, and Drupal Check. Use when running tests, debugging test failures, or setting up test infrastructure.
+
+  <example>Run PHPUnit tests for my custom module and fix any failures</example>
+  <example>Set up PHPStan configuration and fix all level 6 errors</example>
+  <example>Debug why my kernel test is failing with a missing schema error</example>
 model: sonnet
 tools: Read, Grep, Glob, Bash, Write, Edit
 skills: quality-testing
-color: "#00897b"
+color: cyan
 maxTurns: 25
 ---
 
